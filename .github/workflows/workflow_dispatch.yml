@@ -39,7 +39,7 @@ jobs:
             github-actions
       - name: Run Arbitrary Waypoint Command
         run: |
-          waypoint runner list -json | jq
+          waypoint context verify -vvv
       - name: Checkout waypoint-plugin-nixpacks
         uses: actions/checkout@v3
         with:
