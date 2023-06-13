@@ -1,32 +1,13 @@
-name: Waypoint CI
+env:
+  WAYPOINT_SERVER_TOKEN: ${{ secrets.WAYPOINT_SERVER_TOKEN }}
+  WAYPOINT_SERVER_ADDR: ${{ secrets.WAYPOINT_SERVER_ADDR }}
+  WAYPOINT_SERVER_TLS: 1
+  WAYPOINT_SERVER_TLS_SKIP_VERIFY: 1
 
-on: [push, pull_request]
-
-jobs:
-  build:
-    runs-on: ubuntu-latest
-    services:
-      docker:
-        image: docker:dind
-        options: --privileged --entrypoint "" 
-
-    steps:
-    - name: Check out code
-      uses: actions/checkout@v2
-
-    - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v1
-
-    - name: Run Waypoint
-      uses: docker://registry.gitlab.com/gitlab-org/waypoint-images:latest
-      with:
-        entrypoint: /bin/sh
-        args: |
-          -c "export WAYPOINT_SERVER_ADDR=${{ secrets.WAYPOINT_SERVER_ADDR }}
-             export WAYPOINT_SERVER_TOKEN=${{ secrets.WAYPOINT_SERVER_TOKEN }}
-             export WAYPOINT_SERVER_TLS='1'
-             export WAYPOINT_SERVER_TLS_SKIP_VERIFY='1'
-             waypoint init
-             waypoint up"
-      env:
-        DOCKER_BUILDKIT: 1
+steps:
+  - uses: actions/checkout@v2
+  - uses: hashicorp/action-setup-waypoint
+    with:
+      version: '0.1.0'
+- run: waypoint init
+- run: waypoint build
