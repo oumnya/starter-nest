@@ -1,43 +1,37 @@
-# This workflow is a POC for demonstrating using Waypoint in an ephemeral
-# and remote environment, that is _easily_ executable via API call.
+name: Waypoint CI
 
-name: Waypoint
-run-name: Waypoint
+on: [push, pull_request]
 
-on:
-  workflow_dispatch:
 jobs:
-  setup:
+  build:
     runs-on: ubuntu-latest
+    services:
+      docker:
+        image: docker:dind
+        options: --privileged --entrypoint "" 
+
     steps:
-      - name: Install Nixpacks
-        run: |
-          curl -sSL https://nixpacks.com/install.sh | sudo bash
-      - name: Install protoc
-        run: |
-          sudo apt update && sudo apt install -y protobuf-compiler
-          protoc --version
-      - name: Install proto-gen-go
-        run: |
-          go install google.golang.org/protobuf/cmd/protoc-gen-go@v1.28
-          go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@v1.2
-          echo "$(go env GOPATH)/bin" >> $GITHUB_PATH
-      - name: Install Waypoint CLI
-        run: |
-          wget -O- https://apt.releases.hashicorp.com/gpg | gpg --dearmor | sudo tee /usr/share/keyrings/hashicorp-archive-keyring.gpg
-          echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list
-          sudo apt update && sudo apt install waypoint
-      - name: Checkout waypoint-plugin-nixpacks
-        uses: actions/checkout@v3
-        with:
-          repository: thiskevinwang/waypoint-plugin-nixpacks
-          path: waypoint-plugin-nixpacks
-      - name: Build waypoint-plugin-nixpacks plugin
-        working-directory: waypoint-plugin-nixpacks
-        run: |
-          make
-      - name: Build project with waypoint
-        working-directory: .
-        run: |
-          waypoint init
-          waypoint build
+    - name: Check out code
+      uses: actions/checkout@v2
+
+    - name: Checkout waypoint-plugin-nixpacks
+      uses: actions/checkout@v3
+      with:
+        repository: thiskevinwang/waypoint-plugin-nixpacks
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v1
+
+    - name: Run Waypoint
+      uses: docker://registry.gitlab.com/gitlab-org/waypoint-images:latest
+      with:
+        entrypoint: /bin/sh
+        args: |
+          -c "export WAYPOINT_SERVER_ADDR=${{ secrets.WAYPOINT_SERVER_ADDR }}
+             export WAYPOINT_SERVER_TOKEN=${{ secrets.WAYPOINT_SERVER_TOKEN }}
+             export WAYPOINT_SERVER_TLS='1'
+             export WAYPOINT_SERVER_TLS_SKIP_VERIFY='1'
+             waypoint init
+             waypoint up"
+      env:
+        DOCKER_BUILDKIT: 1
