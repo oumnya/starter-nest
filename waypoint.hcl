@@ -12,6 +12,13 @@ app "nested-apps" {
 
   build {
     use "pack" {}
+    registry {
+      use "docker" {
+        image = "nested-apps"
+        tag   = "1"
+        local = true
+      }
+    }
   }
 
   deploy {
