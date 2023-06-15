@@ -32,4 +32,4 @@ jobs:
           # Run the pipeline!
           waypoint version
           waypoint init
-          waypoint up 
+          waypoint build -vv
