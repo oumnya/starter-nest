@@ -7,7 +7,7 @@ runner {
 app "nested-apps" {
 
   build {
-    use "waypoint-plugin-nixpacks" {}
+    use "nixpacks" {}
   }
 
   deploy {
