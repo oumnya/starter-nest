@@ -63,4 +63,4 @@ jobs:
           # Run the pipeline!
           waypoint version
           waypoint init
-          waypoint build -vv      
+          waypoint up -local=false      
