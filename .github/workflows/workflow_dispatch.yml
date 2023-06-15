@@ -26,7 +26,7 @@ jobs:
 
 
           # Create a CLI context to hook up to a Waypoint server
-          waypoint context create \
+          waypoint context create -vvv \
             -server-addr=${{ secrets.WAYPOINT_SERVER_ADDR }} \
             -server-auth-token=${{ secrets.WAYPOINT_SERVER_ADDR }} \
             -server-require-auth=true \
