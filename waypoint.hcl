@@ -7,9 +7,13 @@ runner {
 app "nested-apps" {
 
   build {
-    use "pack" {
-      builder = "heroku/buildpacks:20"
-
+    use "pack" {}
+    registry {
+      use "docker" {
+        image = "test-nest"
+        tag   = "1"
+        local = true
+      }
     }
   }
 
