@@ -1,51 +1,35 @@
-# This workflow is a POC for demonstrating using Waypoint in an ephemeral
-# and remote environment, that is _easily_ executable via API call.
-
-name: Waypoint
-run-name: Waypoint
-
+name: "Runs a Waypoint deployment on merge"
 on:
-  workflow_dispatch:
+  # once a day, at the end of the day
+  #schedule:
+  #  - cron: "0 0 * * *"
+  push:
+    branches:
+      - main
+      - prod
+      - test
 jobs:
-  setup:
+  deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Install Nixpacks
-        run: |
-          curl -sSL https://nixpacks.com/install.sh | sudo bash
-      - name: Install protoc
-        run: |
-          sudo apt update && sudo apt install -y protobuf-compiler
-          protoc --version
-      - name: Install proto-gen-go
-        run: |
-          go install google.golang.org/protobuf/cmd/protoc-gen-go@v1.28
-          go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@v1.2
-          echo "$(go env GOPATH)/bin" >> $GITHUB_PATH
-      - name: Install Waypoint CLI
-        run: |
+      - uses: actions/checkout@v3
+      - run: |
+          # Install the latest Waypoint CLI
           wget -O- https://apt.releases.hashicorp.com/gpg | gpg --dearmor | sudo tee /usr/share/keyrings/hashicorp-archive-keyring.gpg
           echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list
           sudo apt update && sudo apt install waypoint
-      - name: Create Waypoint Context
-        run: |
+
+          # Create a CLI context to hook up to a Waypoint server
           waypoint context create \
             -server-addr=${{ secrets.WAYPOINT_SERVER_ADDR }} \
-            -server-auth-token=${{ secrets.WAYPOINT_SERVER_TOKEN }} \
-            -server-platform="nomad" \
+            -server-auth-token=${{ secrets.WAYPOINT_SERVER_ADDR }} \
             -server-require-auth=true -server-tls-skip-verify \
+            -server-platform="nomad" \
             -set-default \
-            github-actions
-      - name: Run Arbitrary Waypoint Command
-        run: |
-          waypoint context verify -vvv
-      - name: Checkout waypoint-plugin-nixpacks
-        uses: actions/checkout@v3
-        with:
-          repository: thiskevinwang/waypoint-plugin-nixpacks
-          path: waypoint-plugin-nixpacks
-      - name: Build project with waypoint
-        working-directory: .
-        run: |
-          waypoint init
-          waypoint build
+            waypoint-gh-runner
+
+      - run: |
+          # Run the pipeline!
+          waypoint version -vvv
+          waypoint init -vvv
+          waypoint up
