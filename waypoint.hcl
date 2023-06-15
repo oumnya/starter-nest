@@ -14,6 +14,7 @@ app "nested-apps" {
     use "pack" {}
     registry {
       use "docker" {
+        builder = "heroku/buildpacks:20"
         image = "nested-apps"
         tag   = "1"
         local = true
