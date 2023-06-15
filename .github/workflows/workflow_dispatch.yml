@@ -44,10 +44,6 @@ jobs:
         with:
           repository: thiskevinwang/waypoint-plugin-nixpacks
           path: waypoint-plugin-nixpacks
-      - name: Build waypoint-plugin-nixpacks plugin
-        working-directory: waypoint-plugin-nixpacks
-        run: |
-          make
       - name: Build project with waypoint
         working-directory: .
         run: |
