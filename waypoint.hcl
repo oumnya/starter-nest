@@ -5,10 +5,7 @@ runner {
 
   enabled = true
 
-  data_source "git" {
-    url  = "https://github.com/oumnya/starter-nest.git"
-    path = ""
-  }
+
 }
 
 app "nested-apps" {
