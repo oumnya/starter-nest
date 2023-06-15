@@ -1,7 +1,15 @@
-# Copyright (c) HashiCorp, Inc.
-# SPDX-License-Identifier: MPL-2.0
 
 project = "nested-apps"
+runner {
+
+
+  enabled = true
+
+  data_source "git" {
+    url  = "https://github.com/oumnya/starter-nest.git"
+    path = ""
+  }
+}
 
 app "nested-apps" {
 
@@ -18,3 +26,4 @@ app "nested-apps" {
   }
 
 }
+

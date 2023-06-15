@@ -22,7 +22,7 @@ jobs:
           # Create a CLI context to hook up to a Waypoint server
           waypoint context create \
             -server-addr=${{ secrets.WAYPOINT_SERVER_ADDR }} \
-            -server-auth-token=${{ secrets.WAYPOINT_SERVER_ADDR }} \
+            -server-auth-token=${{ secrets.WAYPOINT_SERVER_TOKEN }} \
             -server-require-auth=true -server-tls-skip-verify \
             -server-platform="nomad" \
             -set-default \
@@ -30,7 +30,6 @@ jobs:
 
       - run: |
           # Run the pipeline!
-          waypoint version 
-          waypoint context list -vv
-          waypoint init -v
+          waypoint version
+          waypoint init
           waypoint up 
