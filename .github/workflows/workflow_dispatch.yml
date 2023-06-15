@@ -30,6 +30,7 @@ jobs:
 
       - run: |
           # Run the pipeline!
-          waypoint version -vvv
-          waypoint init -vvv
-          waypoint up
+          waypoint version 
+          waypoint context list -vv
+          waypoint init -v
+          waypoint up 

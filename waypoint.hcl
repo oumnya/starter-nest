@@ -14,7 +14,6 @@ app "nested-apps" {
       // these options both default to the values shown, but are left here to
       // show they are configurable
       datacenter = "ng1"
-      namespace  = "default"
     }
   }
 
