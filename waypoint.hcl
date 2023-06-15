@@ -3,8 +3,8 @@ project = "nested-apps"
 runner {
   enabled = true
   env = {
-    "NOMAD_ADDR"= "${{ secrets.NOMAD_ADDR }}",
-    "NOMAD_TOKEN"= "${{ secrets.NOMAD_TOKEN }}"
+    NOMAD_ADDR= "${{ secrets.NOMAD_ADDR }}"
+    NOMAD_TOKEN= "${{ secrets.NOMAD_TOKEN }}"
   }
 }
 
