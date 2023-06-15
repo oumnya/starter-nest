@@ -65,5 +65,5 @@ jobs:
         # to the same directory as the waypoint.hcl file.
         working-directory: .
         run: |
-          waypoint init -vvv
+          waypoint init -non-interactive -vv
           waypoint build -vvv
