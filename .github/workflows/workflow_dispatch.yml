@@ -63,7 +63,7 @@ jobs:
       - name: Build project with waypoint
         # Note that the build step will have built and copied a plugin binary
         # to the same directory as the waypoint.hcl file.
-        working-directory: starter-nest
+        working-directory: .
         run: |
           waypoint init -vvv
           waypoint build -vvv
