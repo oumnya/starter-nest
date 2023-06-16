@@ -7,7 +7,7 @@ runner {
 app "nested-apps" {
 
   build {
-    use "nixpacks" {}
+    use "pack" {}
   }
 
   deploy {
